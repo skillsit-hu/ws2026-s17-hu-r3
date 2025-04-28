@@ -17,10 +17,10 @@
 
 04/28/2025, Monday
 
-- **08:00-08:30** Arrival at the competition area
-- **08:30-09:00** Opening meeting
-- **09:00-09:45** Familiarisation
-- **10:00-11:30** Szakma Sztár Opening Ceremony
+- **08:00-08:15** Arrival at the competition area
+- **08:15-08:45** Opening meeting
+- **09:00-10:30** Szakma Sztár Opening Ceremony
+- **10:45-11:30** Familiarisation
 - **11:30-12:30** Module A - Speed Test
 - **12:30-13:30** Lunch break
 - **13:30-16:30** Module B - Design implementation and Frontend
