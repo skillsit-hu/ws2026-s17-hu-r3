@@ -1,0 +1,26 @@
+[
+	{
+		"name": "10% off",
+		"description": "Get 10% off your next wash!"
+	},
+	{
+		"name": "20% off",
+		"description": "Get 20% off your next wash!"
+	},
+	{
+		"name": "30% off",
+		"description": "Get 30% off your next wash!"
+	},
+	{
+		"name": "50% off",
+		"description": "Get 50% off your next wash!"
+	},
+	{
+		"name": "Free Wash",
+		"description": "A free wash is on us!"
+	},
+	{
+		"name": "Free Dry",
+		"description": "A free drying is on us!"
+	}
+]
