@@ -1,0 +1,309 @@
+openapi: 3.0.0
+info:
+  title: Washing Machine Web Service API
+  description: API for controlling and monitoring washing machine status
+  version: 1.0.0
+
+servers:
+  - url: <<wm_base_url>>
+    description: Development server
+
+paths:
+  /status:
+    get:
+      summary: Get machine status
+      description: Returns the current operational status of the washing machine
+      responses:
+        '200':
+          description: Successful query
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MachineStatus'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /machineInfo:
+    get:
+      summary: Get machine information
+      description: Returns basic information about the washing machine
+      responses:
+        '200':
+          description: Successful query
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MachineInfo'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /control/start:
+    post:
+      summary: Start machine
+      description: Starts the washing machine with specified program parameters
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - spinSpeed
+                - temperature
+              properties:
+                name:
+                  type: string
+                  description: Name of the program
+                spinSpeed:
+                  type: number
+                  description: Spin speed (RPM)
+                temperature:
+                  type: number
+                  description: Washing temperature (°C)
+      responses:
+        '200':
+          description: Successful start
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status:
+                    $ref: '#/components/schemas/MachineStatus'
+        '409':
+          description: Operation not allowed in current state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /control/stop:
+    post:
+      summary: Stop machine
+      description: Stops the washing machine
+      responses:
+        '200':
+          description: Successful stop
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status:
+                    $ref: '#/components/schemas/MachineStatus'
+        '409':
+          description: Operation not allowed in current state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /control/pause:
+    post:
+      summary: Pause machine
+      description: Pauses the washing machine
+      responses:
+        '200':
+          description: Successful pause
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status:
+                    $ref: '#/components/schemas/MachineStatus'
+        '409':
+          description: Operation not allowed in current state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /control/resume:
+    post:
+      summary: Resume machine
+      description: Resumes the washing machine operation after pause
+      responses:
+        '200':
+          description: Successful resume
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status:
+                    $ref: '#/components/schemas/MachineStatus'
+        '409':
+          description: Operation not allowed in current state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /control/reset:
+    post:
+      summary: Reset machine
+      description: Resets the washing machine to its initial state
+      responses:
+        '200':
+          description: Successful reset
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  status:
+                    $ref: '#/components/schemas/MachineStatus'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    MachineStatus:
+      type: object
+      properties:
+        operationalStatus:
+          type: string
+          enum: [idle, operational, paused]
+          description: Machine operational status
+        currentProgram:
+          $ref: '#/components/schemas/CurrentProgram'
+          nullable: true
+          description: Active program data
+
+    Program:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Program name
+        temperature:
+          type: number
+          description: Washing temperature (°C)
+        spinSpeed:
+          type: number
+          description: Spin speed (RPM)
+        duration:
+          type: number
+          description: Program duration in minutes
+          readOnly: true
+      required:
+        - name
+        - temperature
+        - spinSpeed
+
+    MachineInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Machine identifier
+        name:
+          type: string
+          description: Machine name
+        type:
+          type: string
+          description: Machine type
+        brand:
+          type: string
+          description: Machine brand
+        model:
+          type: string
+          description: Machine model
+        availablePrograms:
+          type: array
+          items:
+            $ref: '#/components/schemas/AvailableProgram'
+          description: List of available programs
+      required:
+        - id
+        - name
+        - type
+        - brand
+        - model
+        - availablePrograms
+
+    AvailableProgram:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Program name
+        spinSpeed:
+          type: array
+          items:
+            type: number
+          description: Possible spin speeds (RPM)
+        temperature:
+          type: array
+          items:
+            type: number
+          description: Possible temperatures (°C)
+
+    Error:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error message
+
+    CurrentProgram:
+      allOf:
+        - $ref: '#/components/schemas/Program'
+        - type: object
+          properties:
+            startTime:
+              type: string
+              format: date-time
+              description: Program starting time 
+            remainingTime:
+              type: number
+              description: Remaining time in seconds
+            
