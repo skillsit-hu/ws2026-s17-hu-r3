@@ -60,6 +60,10 @@ Authentication is **token‑based**:
 
 Unauthenticated or revoked tokens must yield **401 Unauthorised**.
 
+### 1.3 Database
+
+You must provide a complete database dump at the end of the module for evaluation purposes. You should include the dump in your solution's repository.
+
 ---
 
 ## 2 Embedded Web Server in the Washing Machine
@@ -172,6 +176,7 @@ erDiagram
 - In case of a missing or invalid token, the backend should return a `401 Unauthorized` response:
 
 **Response:** 401 Unauthorized
+
 ```json
 {
   "message": "Invalid or expired token"
@@ -272,6 +277,7 @@ Logout the current user. Sets the `revokedAt` field of the user's token to the c
   "message": "Logout successful"
 }
 ```
+
 ---
 
 #### GET /users/me
@@ -288,6 +294,7 @@ Get the current user's information, including their available credit balance.
   "credits": 100
 }
 ```
+
 ---
 
 #### POST /users/me/credits
@@ -353,8 +360,8 @@ The logic is as follows:
 1. If the machine status is not `operational` or `paused`, then `myCycle` is `false`.
 2. If the machine status is `operational` or `paused`, then the question is determined based on the most recent record with `start` value in the `action` of `MachineUsage` table for that machine:
 
-    - If no such record exists, `myCycle` is `false`.
-    - If such a record exists, `myCycle` is `true` if the record belongs to the given user, `false` otherwise.
+   - If no such record exists, `myCycle` is `false`.
+   - If such a record exists, `myCycle` is `true` if the record belongs to the given user, `false` otherwise.
 
 **Response:**
 
@@ -407,6 +414,7 @@ The duration is determined by the selected program. The duration is not affected
 _**Example**: 42‑minute wash (2520 seconds) ⇒ ceil(2520 / 3600) × 10 + 5 = 1 × 10 + 5 = 15 credits._
 
 If the program can start:
+
 - Send the `/control/start` command to the machine with the selected program and parameters.
 - Create a log entry in the `MachineUsage` table, where the action field is set to `start`. Set `userId` to the authenticated user's ID, `machineId` to the machine's ID, and `parameters` to the program parameters in JSON format.
 - Deduct the program's credit cost from the user's credit balance
@@ -503,7 +511,7 @@ If the program stops successfully, create a log entry in the `MachineUsage` tabl
 
 #### PATCH /machines/:id/pause
 
-Suspend the program on an `operational` status machine. The program can only be stopped by the user who started it. The paused state has no additional cost for the user. 
+Suspend the program on an `operational` status machine. The program can only be stopped by the user who started it. The paused state has no additional cost for the user.
 
 Sends the `/control/pause` command to the machine.
 
@@ -525,7 +533,7 @@ If the program pauses successfully, create a log entry in the `MachineUsage` tab
 }
 ```
 
-***Response (if the authetnicated user did not start the program):** 403 Forbidden
+**\*Response (if the authetnicated user did not start the program):** 403 Forbidden
 
 ```json
 {
