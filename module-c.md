@@ -62,9 +62,7 @@ Unauthenticated or revoked tokens must yield **401 Unauthorised**.
 
 ### 1.3 Database
 
-You must provide a complete database dump at the end of the module for evaluation purposes. You should include the dump in your solution's repository.
-
----
+## You must provide a complete database dump at the end of the module for evaluation purposes. You should include the dump in your solution's repository.
 
 ## 2 Embedded Web Server in the Washing Machine
 
@@ -481,7 +479,7 @@ Stopping the program on an operational or paused status machine. The program can
 
 Sends the `/control/stop` command to the machine.
 
-If the program stops successfully, create a log entry in the `MachineUsage` table, where the `action` field is set to `stop`.
+If the program stops successfully, create a log entry in the `MachineUsage` table, where the `action` field is set to `stop`, `parameters` field is set to empty JSON object.
 
 **Response (on success):** 200 OK
 
@@ -499,7 +497,7 @@ If the program stops successfully, create a log entry in the `MachineUsage` tabl
 }
 ```
 
-**Response (if the authetnicated user did not start the program):** 403 Forbidden
+**Response (if not the authetnicated user started the program):** 403 Forbidden
 
 ```json
 {
