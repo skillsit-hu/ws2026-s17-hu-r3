@@ -1,0 +1,73 @@
+services:
+  competitor-1-wm-1:
+    container_name: competitor-1-wm-1
+    image: ghcr.io/skillsit-hu/ws2026-s17-hu-r3-washing-machine-webservice:latest
+    environment:
+      - NODE_ENV=production
+      - MACHINE_ID=1
+    restart: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.competitor-1-wm-1.rule: HostRegexp(`{_:module-c-1111-wm-1\..*}`)
+      traefik.http.services.competitor-1-wm-1.loadbalancer.server.port: 5500
+      traefik.http.routers.competitor-1-wm-1-http.entrypoints: web
+
+  competitor-1-wm-2:
+    container_name: competitor-1-wm-2
+    image: ghcr.io/skillsit-hu/ws2026-s17-hu-r3-washing-machine-webservice:latest
+    environment:
+      - NODE_ENV=production
+      - MACHINE_ID=1
+    restart: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.competitor-1-wm-2.rule: HostRegexp(`{_:module-c-1111-wm-2\..*}`)
+      traefik.http.services.competitor-1-wm-2.loadbalancer.server.port: 5500
+      traefik.http.routers.competitor-1-wm-2-http.entrypoints: web
+
+  competitor-1-wm-3:
+    container_name: competitor-1-wm-3
+    image: ghcr.io/skillsit-hu/ws2026-s17-hu-r3-washing-machine-webservice:latest
+    environment:
+      - NODE_ENV=production
+      - MACHINE_ID=1
+    restart: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.competitor-1-wm-3.rule: HostRegexp(`{_:module-c-1111-wm-3\..*}`)
+      traefik.http.services.competitor-1-wm-3.loadbalancer.server.port: 5500
+      traefik.http.routers.competitor-1-wm-3-http.entrypoints: web
+  competitor-1-wm-4:
+    container_name: competitor-1-wm-4
+    image: ghcr.io/skillsit-hu/ws2026-s17-hu-r3-washing-machine-webservice:latest
+    environment:
+      - NODE_ENV=production
+      - MACHINE_ID=1
+    restart: unless-stopped
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.competitor-1-wm-4.rule: HostRegexp(`{_:module-c-1111-wm-4\..*}`)
+      traefik.http.services.competitor-1-wm-4.loadbalancer.server.port: 5500
+      traefik.http.routers.competitor-1-wm-4-http.entrypoints: web
+  traefik:
+    image: traefik:v2.11.0
+    container_name: traefik
+    restart: unless-stopped
+    command:
+      - "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.file.directory=/etc/traefik/dynamic"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--providers.docker.defaultRule=HostRegexp(`{_:{{ index .Labels \"com.docker.compose.service\" }}\\..*}`)"
+      - "--serversTransport.insecureSkipVerify=true"
+    ports:
+      - "80:80"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./config/traefik/config.yaml:/etc/traefik/dynamic/traefik.yaml"
+    labels:
+      traefik.http.routers.traefik.rule: HostRegexp(`{_:traefik\..*}`)
+      traefik.http.routers.traefik.entrypoints: web
+      traefik.http.services.traefik.loadbalancer.server.port: 8080
